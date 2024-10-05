@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Sombra de Vhaltoria</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2c3e50;
+      color: white;
+      text-align: center;
+      padding-top: 50px;
+    }
+    h1 {
+      font-size: 50px;
+      color: #f1c40f;
+      animation: glow 1.5s infinite alternate;
+    }
+    @keyframes glow {
+      from {
+        text-shadow: 0 0 10px #f39c12, 0 0 20px #f39c12, 0 0 30px #f39c12;
+      }
+      to {
+        text-shadow: 0 0 20px #f1c40f, 0 0 30px #f1c40f, 0 0 40px #f1c40f;
+      }
+    }
+    .menu {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+    }
+    .menu button {
+      background-color: #2980b9;
+      border: none;
+      color: white;
+      padding: 15px 30px;
+      margin: 10px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    .menu button:hover {
+      background-color: #3498db;
+    }
+  </style>
+</head>
+<body>
+  <h1>A Sombra de Vhaltoria</h1>
+  <div class="menu">
+    <button id="newGameBtn">Nova Aventura</button>
+    <button id="loadGameBtn">Carregar Jogo</button>
+    <button id="howToPlayBtn">Como Jogar</button>
+    <button id="storyBtn">História</button>
+    <button id="exitBtn">Sair</button>
+  </div>
+
+  <script>
+    document.getElementById('newGameBtn').addEventListener('click', () => {
+      // Redireciona para a tela de criação de personagem
+      window.location.href = 'criar_personagem.html';
+    });
+
+    document.getElementById('loadGameBtn').addEventListener('click', () => {
+      alert('Função de Carregar Jogo ainda não implementada.');
+    });
+
+    document.getElementById('howToPlayBtn').addEventListener('click', () => {
+      alert('Em "A Sombra de Vhaltoria", você explorará ruínas misteriosas, enfrentará demônios e escolherá seu destino.\n- Use suas perícias e magias para lutar.\n- Lançamentos de dados d100 determinam o sucesso das ações: quanto menor o número, melhor o resultado.\n- O objetivo é pegar a Máscara Maldita e entregá-la ao Rei.');
+    });
+
+    document.getElementById('storyBtn').addEventListener('click', () => {
+      alert('História:\nO Reino de Vhaltoria está à beira da ruína. Há rumores de que um artefato perdido nas Ruínas Antigas pode salvar o reino, mas criaturas demoníacas guardam este segredo. Cabe a você, um aventureiro corajoso, recuperar a máscara e revelar a verdade.');
+    });
+
+    document.getElementById('exitBtn').addEventListener('click', () => {
+      alert('Sair do Jogo.'); // Aqui você pode adicionar código para fechar o jogo, caso seja um aplicativo
+    });
+  </script>
+</body>
+</html>

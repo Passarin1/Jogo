@@ -1,0 +1,49 @@
+/* Estilizando o layout básico do jogo */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f0f0f0;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+}
+
+#game-container {
+    width: 800px;
+    padding: 20px;
+    background-color: #fff;
+    border: 2px solid #000;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+
+#menu {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+#menu button {
+    margin: 10px;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+#dialogue-container {
+    background-color: #eaeaea;
+    padding: 20px;
+    border: 1px solid #ccc;
+}
+
+#dialogue {
+    font-size: 18px;
+    margin-bottom: 20px;
+}
+
+#options button {
+    margin-right: 10px;
+    padding: 10px;
+    font-size: 16px;
+    cursor: pointer;
+}

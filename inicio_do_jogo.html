@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>A Sombra de Vhaltoria - Aventura</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #2c3e50;
+      color: white;
+      padding: 20px;
+      text-align: left;
+    }
+    #dialogueBox {
+      background-color: #34495e;
+      padding: 15px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+    }
+    #optionsBox button {
+      background-color: #2980b9;
+      border: none;
+      color: white;
+      padding: 10px 20px;
+      margin: 5px;
+      font-size: 16px;
+      cursor: pointer;
+      border-radius: 5px;
+      transition: background-color 0.3s ease;
+    }
+    #optionsBox button:hover {
+      background-color: #3498db;
+    }
+    #itemDetails {
+      background-color: #34495e;
+      padding: 10px;
+      border-radius: 10px;
+      margin-bottom: 20px;
+      display: none; /* Initially hidden */
+    }
+  </style>
+</head>
+<body>
+  <div id="dialogueBox">
+    <p>Você se encontra em uma taverna movimentada, o som das canecas de cerveja batendo ecoa no salão. O taverneiro, um homem robusto com um bigode volumoso, acena em sua direção.</p>
+  </div>
+  <div id="optionsBox">
+    <button onclick="nextDialogue(0)">Conversar com o taverneiro</button>
+    <button onclick="nextDialogue(1)">Procurar uma mesa</button>
+    <button onclick="nextDialogue(2)">Falar com um grupo de aventureiros</button>
+  </div>
+  <div id="itemDetails"></div>
+
+  <script>
+    const itemsForSale = [
+      { name: 'Poção de Vida', description: 'Restaura 50 pontos de vida.', price: { bronze: 100, silver: 1, gold: 0 }, damage: 0 },
+      { name: 'Poção de Mana', description: 'Restaura 30 pontos de mana.', price: { bronze: 150, silver: 1.5, gold: 0 }, damage: 0 },
+      { name: 'Espada Curta', description: 'Uma arma leve e afiada, ideal para combate corpo a corpo.', price: { bronze: 200, silver: 2, gold: 0 }, damage: 5 },
+      { name: 'Escudo de Madeira', description: 'Um escudo simples que oferece proteção básica.', price: { bronze: 150, silver: 1.5, gold: 0 }, damage: 0 },
+      { name: 'Mapa das Ruínas', description: 'Um mapa que mostra os principais pontos das Ruínas Antigas.', price: { bronze: 250, silver: 2.5, gold: 0 }, damage: 0 },
+      { name: 'Contratar Aventureiro', description: 'Um NPC que irá ajudá-lo na sua jornada.', price: { bronze: 500, silver: 5, gold: 0 }, damage: 0 },
+    ];
+
+    const inventory = [];
+    let playerGold = 0; // Moeda de ouro do jogador
+    let playerSilver = 10; // Moeda de prata do jogador
+    let playerBronze = 500; // Moeda de bronze do jogador
+
+    const dialogues = [
+      { 
+        text: 'O taverneiro sorri, limpando uma caneca com um pano já sujo. "Bem-vindo, aventureiro! O que vai ser hoje? Bebida ou histórias de terror sobre as Ruínas Antigas?"',
+        options: ['Perguntar sobre as Ruínas', 'Pedir uma bebida', 'Sair da taverna'] 
+      },
+      { 
+        text: 'Você olha ao redor e vê uma mesa vazia no canto. Sentado ali, um homem velho observa você atentamente. A luz fraca da lareira mal ilumina seu rosto encovado, mas você pode sentir que ele sabe mais do que parece.',
+        options: ['Ir até o homem velho', 'Ficar onde está'] 
+      },
+      { 
+        text: '"As Ruínas Antigas são um lugar perigoso, repletas de criaturas demoníacas e armadilhas. Dizem que um artefato mágico está escondido lá, mas muitos que entraram nunca mais voltaram." O taverneiro faz uma pausa, olhando em volta cautelosamente.',
+        options: ['Perguntar mais sobre o artefato', 'Agradecer e pedir uma bebida', 'Sair da taverna'] 
+      },
+      { 
+        text: 'Você se aproxima do homem velho. Ele levanta os olhos, e uma expressão de reconhecimento atravessa seu rosto. "Você é um aventureiro, não é? Posso sentir isso em suas veias. Venha, sente-se e escute o que eu tenho a dizer."',
+        options: ['Sentar e ouvir', 'Ignorar e voltar para o taverneiro'] 
+      },
+      { 
+        text: '"O artefato que você procura está protegido por um guardião demoníaco. Muitos já tentaram, mas poucos voltaram. Se você estiver disposto a ir, precisará de coragem e sabedoria."',
+        options: ['Agradecer ao homem e partir para as Ruínas', 'Perguntar sobre como se preparar para a jornada'] 
+      },
+      { 
+        text: 'O homem velho sorri. "Você precisará de poções e talvez de um mapa. Conheço um comerciante que pode ajudá-lo. Mas cuidado, ele cobra caro."',
+        options: ['Perguntar onde encontrar o comerciante', 'Agradecer e partir para as Ruínas'] 
+      },
+      { 
+        text: 'Você decide que é hora de deixar a taverna. O som da música e das conversas se desvanece à medida que você sai para o ar fresco da noite, a lua brilhando acima de você.',
+        options: ['Partir para as Ruínas', 'Explorar a cidade'] 
+      },
+      { 
+        text: 'Ao se aproximar do grupo de aventureiros, você escuta murmúrios sobre uma jornada perigosa. Um dos membros, uma mulher de cabelos escuros e armadura reluzente, se vira para você. "Você vai em direção às Ruínas Antigas? Se precisar de ajuda, estou aqui para isso!"',
+        options: ['Aceitar a ajuda', 'Agradecer, mas seguir sozinho'] 
+      },
+      { 
+        text: 'O homem velho aponta para um canto da taverna, onde um comerciante de aparência astuta está vendendo itens. "Lá está ele. Vá rápido antes que todos os bons itens acabem!"',
+        options: ['Ir até o comerciante', 'Agradecer ao homem e ir embora'] 
+      },
+      { 
+        text: 'Você se aproxima do comerciante. "Ah, um novo cliente! Estou vendendo poções e alguns artefatos raros. O que você procura?" ele pergunta, sorrindo maliciosamente.',
+        options: ['Comprar poções', 'Perguntar sobre artefatos raros', 'Sair'] 
+      },
+      { 
+        text: 'Depois de negociar com o comerciante, você sai com algumas poções em mãos. "Boa sorte na sua jornada!" ele grita enquanto você se afasta.',
+        options: ['Partir para as Ruínas', 'Explorar a cidade'] 
+      },
+      {
+        text: 'Você se despede da taverna e começa a sua jornada em direção às Ruínas Antigas. O caminho é estreito, ladeado por árvores altas que sussurram com o vento. O céu está nublado, e a atmosfera é pesada com uma sensação de antecipação.',
+        options: ['Continuar pelo caminho', 'Parar para descansar'] 
+      },
+      {
+        text: 'Enquanto caminha, você ouve risadinhas à distância. De repente, um bando de goblins aparece, cercando você! Eles parecem famintos e prontos para atacar.',
+        options: ['Preparar-se para lutar', 'Tentar negociar com os goblins', 'Fugir'] 
+      },
+      {
+        text: 'Você encontra um viajante solitário sentado à beira do caminho. Ele parece exausto, mas seu olhar é determinado. "Você vai para as Ruínas? Precisa de um mapa? Eu posso ajudar!"',
+        options: ['Aceitar a oferta do viajante', 'Ignorar e continuar'] 
+      },
+      {
+        text: 'Enquanto explora uma clareira, você encontra uma caixa antiga coberta de musgo. Ao abri-la, encontra um amuleto que brilha suavemente. Ele parece ter um poder mágico!',
+        options: ['Pegar o amuleto', 'Deixar o amuleto e seguir em frente'] 
+      },
+      {
+        text: 'Após vários desafios e encontros estranhos, você finalmente se vê diante da entrada das Ruínas Antigas. O ar é denso, e uma sensação de perigo imediato permeia o ambiente.',
+        options: ['Entrar nas Ruínas', 'Explorar mais a área ao redor'] 
+      }
+    ];
+
+    function nextDialogue(index) {
+      const dialogue = dialogues[index];
+      document.getElementById('dialogueBox').innerHTML = `<p>${dialogue.text}</p>`;
+      document.getElementById('optionsBox').innerHTML = dialogue.options
+        .map((option, i) => `<button onclick="nextDialogue(${index + 1 + i})">${option}</button>`)
+        .join('');
+
+      if (index === 8) { // Exibe itens à venda após a conversa com o comerciante
+        displayItemsForSale();
+      }
+      if (index === 9) { // Exibe a opção de salvar o jogo
+        displaySaveOption();
+      }
+    }
+
+    function displayItemsForSale() {
+      let itemsHtml = '<h3>Itens à Venda:</h3>';
+      itemsForSale.forEach((item, index) => {
+        itemsHtml += `
+          <div>
+            <strong>${item.name}</strong> - ${item.description} (Preço: ${item.price.gold} ouro, ${item.price.silver} prata, ${item.price.bronze} bronze)
+            <button onclick="buyItem(${index})">Comprar</button>
+          </div>
+        `;
+      });
+      itemsHtml += '<button onclick="viewInventory()">Ver Inventário</button>';
+      document.getElementById('itemDetails').innerHTML = itemsHtml;
+      document.getElementById('itemDetails').style.display = 'block'; // Show items
+    }
+
+    function buyItem(index) {
+      const item = itemsForSale[index];
+
+      // Verifica se o jogador tem moedas suficientes
+      if (playerGold >= item.price.gold && playerSilver >= item.price.silver && playerBronze >= item.price.bronze) {
+        // Subtrai o custo do inventário do jogador
+        playerGold -= item.price.gold;
+        playerSilver -= item.price.silver;
+        playerBronze -= item.price.bronze;
+
+        // Adiciona o item ao inventário
+        inventory.push(item);
+        alert(`Você comprou ${item.name}!`);
+      } else {
+        alert('Você não tem moedas suficientes para comprar este item.');
+      }
+    }
+
+    function viewInventory() {
+      let inventoryHtml = '<h3>Seu Inventário:</h3>';
+      inventory.forEach(item => {
+        inventoryHtml += `<div>${item.name} - ${item.description}</div>`;
+      });
+      inventoryHtml += '<button onclick="closeInventory()">Fechar Inventário</button>';
+      document.getElementById('itemDetails').innerHTML = inventoryHtml;
+    }
+
+    function closeInventory() {
+      displayItemsForSale();
+    }
+
+    function displaySaveOption() {
+      document.getElementById('optionsBox').innerHTML += `
+        <button onclick="saveGame()">Salvar Jogo</button>
+      `;
+    }
+
+    function saveGame() {
+      const gameData = {
+        inventory: inventory,
+        playerGold: playerGold,
+        playerSilver: playerSilver,
+        playerBronze: playerBronze,
+      };
+      localStorage.setItem('savedGame', JSON.stringify(gameData));
+      alert('Jogo salvo com sucesso!');
+    }
+
+    // Para carregar o jogo ao iniciar
+    function loadGame() {
+      const savedGame = localStorage.getItem('savedGame');
+      if (savedGame) {
+        const gameData = JSON.parse(savedGame);
+        inventory.push(...gameData.inventory);
+        playerGold = gameData.playerGold;
+        playerSilver = gameData.playerSilver;
+        playerBronze = gameData.playerBronze;
+        alert('Jogo carregado com sucesso!');
+      }
+    }
+
+    // Chama a função para carregar o jogo ao iniciar
+    loadGame();
+  </script>
+</body>
+</html>

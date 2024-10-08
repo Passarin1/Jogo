@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>A Sombra de Vhaltoria - Aventura</title>
+  <title>A Sombra de Valthoria - Aventura</title>
   <style>
     body {
       font-family: Arial, sans-serif;
@@ -11,7 +11,6 @@
       color: white;
       padding: 20px;
       text-align: left;
-      position: relative; /* Adicionado para facilitar o posicionamento */
     }
     #dialogueBox {
       background-color: #34495e;
@@ -51,9 +50,9 @@
       display: none;
     }
     #statusBox {
-      position: absolute; /* Alterado para 'absolute' */
-      bottom: 20px; /* Alinhado à parte inferior */
-      right: 20px; /* Alinhado à direita */
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
       background-color: #34495e;
       padding: 15px;
       border-radius: 10px;
@@ -69,18 +68,13 @@
       margin: 5px 0;
       font-size: 14px;
     }
-    #playerInventory {
-      margin-top: 10px;
-      cursor: pointer;
-      color: #2980b9;
-    }
   </style>
 </head>
 <body>
   <div id="dialogueBox">
     <img id="npcImage" src="/imgs/Tarverneiro.webp" alt="Imagem do NPC">
     <div id="dialogueText">
-      <p>Você se encontra em uma taverna movimentada, onde o som das canecas de cerveja ecoa pelo salão. O taverneiro, um homem robusto com um bigode volumoso, acena para você.</p>
+      <p>Você se encontra em uma taverna movimentada, o som das canecas de cerveja batendo ecoa no salão. O taverneiro, um homem robusto com um bigode volumoso, acena em sua direção.</p>
     </div>
   </div>
 
@@ -93,8 +87,8 @@
   <div id="itemDetails"></div>
 
   <div id="statusBox">
+    <img id="playerImage" src="/imgs/Player.png" alt="Imagem do Player">
     <h3>Status do Jogador</h3>
-    <img id="playerImage" src="/imgs/player.png" alt="Imagem do Jogador" width="100">
     <p id="level">Nível: 1</p>
     <p id="hp">HP: 100</p>
     <p id="sanity">Sanidade: 100</p>
@@ -102,7 +96,7 @@
     <p id="gold">Ouro: 0</p>
     <p id="silver">Prata: 10</p>
     <p id="bronze">Bronze: 500</p>
-    <p id="playerInventory" onclick="viewInventory()">Inventário: ${inventory.length} itens</p>
+    <button onclick="viewInventory()">Ver Inventário</button>
   </div>
 
   <script>
@@ -111,8 +105,7 @@
       { name: 'Poção de Mana', description: 'Restaura 30 pontos de mana.', price: { bronze: 150, silver: 1.5, gold: 0 }, damage: 0 },
       { name: 'Espada Curta', description: 'Uma arma leve e afiada, ideal para combate corpo a corpo.', price: { bronze: 200, silver: 2, gold: 0 }, damage: 5 },
       { name: 'Escudo de Madeira', description: 'Um escudo simples que oferece proteção básica.', price: { bronze: 150, silver: 1.5, gold: 0 }, damage: 0 },
-      { name: 'Mapa das Ruínas', description: 'Um mapa que mostra os principais pontos das Ruínas Antigas.', price: { bronze: 250, silver: 2.5, gold: 0 }, damage: 0 },
-      { name: 'Contratar Aventureiro', description: 'Um NPC que irá ajudá-lo na sua jornada.', price: { bronze: 500, silver: 5, gold: 0 }, damage: 0 },
+      { name: 'Mapa das Ruínas', description: 'Um mapa que mostra os principais pontos das Ruínas Antigas.', price: { bronze: 250, silver: 2.5, gold: 0 }, damage: 0 }
     ];
 
     const inventory = [];
@@ -126,24 +119,24 @@
 
     const dialogues = [
       { 
-        text: 'O taverneiro sorri, limpando uma caneca com um pano já sujo. "Bem-vindo, aventureiro! O que deseja hoje? Uma bebida refrescante ou talvez histórias aterrorizantes sobre as Ruínas Antigas?"',
+        text: 'O taverneiro sorri, limpando uma caneca com um pano já sujo. "Bem-vindo, aventureiro! O que vai ser hoje? Bebida ou histórias de terror sobre as Ruínas Antigas?"',
         options: ['Perguntar sobre as Ruínas', 'Pedir uma bebida', 'Sair da taverna'] 
       },
       { 
-        text: 'Você olha ao redor e percebe uma mesa vazia no canto. Sentado ali, um homem idoso observa você atentamente. A luz fraca da lareira mal ilumina seu rosto encovado, mas você sente que ele guarda muitos segredos.',
-        options: ['Ir até o homem idoso', 'Ficar onde está'] 
+        text: 'Você olha ao redor e vê uma mesa vazia no canto. Sentado ali, um homem velho observa você atentamente. A luz fraca da lareira mal ilumina seu rosto encovado, mas você pode sentir que ele sabe mais do que parece.',
+        options: ['Ir até o homem velho', 'Ficar onde está'] 
       },
       { 
-        text: 'Você se aproxima do homem idoso, que sorri de maneira enigmática. "Vejo que você está interessado nas Ruínas. Muitos já foram, poucos retornaram. Se realmente deseja ir, precisará se preparar bem."',
+        text: 'Você se aproxima do homem velho, que sorri enigmaticamente. "Vejo que você está interessado nas Ruínas. Muitos já foram, poucos voltaram. Se realmente quer ir, terá que estar preparado."',
         options: ['Perguntar como se preparar', 'Ignorar e sair'] 
       },
       { 
-        text: '"Você vai precisar de bons equipamentos e, acima de tudo, coragem. Há criaturas sombrias nas profundezas... e algo ainda mais aterrorizante guarda um artefato antigo. Pegue este mapa e que a sorte esteja ao seu lado."', 
+        text: '"Você vai precisar de bons equipamentos, mas também de coragem. Há criaturas sombrias nas profundezas... e algo pior, guardando um artefato antigo. Pegue esse mapa e boa sorte."', 
         options: ['Aceitar o mapa', 'Recusar educadamente']
       },
       { 
-        text: 'Você aceitou o mapa das Ruínas. A jornada está prestes a começar.',
-        options: ['Ver inventário', 'Ir até as Ruínas', 'Salvar jogo']
+        text: 'Você aceitou o mapa das Ruínas. A jornada está prestes a começar. Deseja contratar um NPC para ajudá-lo?',
+        options: ['Sim, contratar NPC', 'Não, seguir sozinho']
       },
     ];
 
@@ -155,61 +148,63 @@
       document.getElementById('gold').textContent = `Ouro: ${playerGold}`;
       document.getElementById('silver').textContent = `Prata: ${playerSilver}`;
       document.getElementById('bronze').textContent = `Bronze: ${playerBronze}`;
-      document.getElementById('playerInventory').textContent = `Inventário: ${inventory.length} itens`;
+    }
+
+    function convertCoins(itemPrice) {
+      let totalBronze = (playerGold * 10000) + (playerSilver * 100) + playerBronze;
+      let itemCost = (itemPrice.gold * 10000) + (itemPrice.silver * 100) + itemPrice.bronze;
+
+      if (totalBronze >= itemCost) {
+        totalBronze -= itemCost;
+        playerGold = Math.floor(totalBronze / 10000);
+        totalBronze %= 10000;
+        playerSilver = Math.floor(totalBronze / 100);
+        playerBronze = totalBronze % 100;
+
+        return true;
+      } else {
+        return false;
+      }
+    }
+
+    function buyItem(index) {
+      const item = itemsForSale[index];
+      
+      if (convertCoins(item.price)) {
+        inventory.push(item); // Adiciona ao inventário
+        alert(`Você comprou ${item.name}!`);
+        updateStatus();
+      } else {
+        alert('Você não tem dinheiro suficiente!');
+      }
+    }
+
+    function viewInventory() {
+      let inventoryHtml = '<h3>Seu Inventário:</h3>';
+      inventory.forEach(item => {
+        inventoryHtml += `<p>${item.name} - ${item.description}</p>`;
+      });
+      document.getElementById('itemDetails').innerHTML = inventoryHtml;
+      document.getElementById('itemDetails').style.display = 'block';
     }
 
     function nextDialogue(index) {
       const dialogue = dialogues[index];
       document.getElementById('dialogueText').innerHTML = `<p>${dialogue.text}</p>`;
-      document.getElementById('optionsBox').innerHTML = dialogue.options
-        .map((option, i) => `<button onclick="nextDialogue(${index + 1 + i})">${option}</button>`)
-        .join('');
 
-      if (index === 4) { // Exibe itens à venda após a conversa com o comerciante
-        displayItemsForSale();
+      const optionsHtml = dialogue.options.map((option, i) => `<button onclick="nextDialogue(${i + 1})">${option}</button>`).join('');
+      document.getElementById('optionsBox').innerHTML = optionsHtml;
+
+      if (index === dialogues.length - 1) {
+        // Redireciona para a próxima página quando o diálogo termina
+        setTimeout(() => {
+          window.location.href = 'proxima_pagina.html';
+        }, 2000);
       }
-      if (index === 5) { // Exibe a opção de salvar o jogo
-        displaySaveOption();
-      }
     }
 
-    function displayItemsForSale() {
-      let itemsHtml = '<h3>Itens à Venda:</h3>';
-      itemsForSale.forEach((item, index) => {
-        itemsHtml += `<div onclick="buyItem(${index})" style="cursor: pointer;">${item.name} - ${item.price.bronze} bronze</div>`;
-      });
-      document.getElementById('itemDetails').innerHTML = itemsHtml;
-      document.getElementById('itemDetails').style.display = 'block';
-    }
-
-    function buyItem(itemIndex) {
-      const item = itemsForSale[itemIndex];
-      if (playerGold >= item.price.gold && playerSilver >= item.price.silver && playerBronze >= item.price.bronze) {
-        inventory.push(item);
-        playerGold -= item.price.gold;
-        playerSilver -= item.price.silver;
-        playerBronze -= item.price.bronze;
-        alert(`Você comprou: ${item.name}`);
-      } else {
-        alert('Moedas insuficientes para comprar este item.');
-      }
-      updateStatus();
-    }
-
-    function viewInventory() {
-      const inventoryHtml = inventory.map(item => `<div>${item.name}</div>`).join('');
-      alert(`Seu inventário:\n${inventoryHtml || 'Está vazio.'}`);
-    }
-
-    function displaySaveOption() {
-      document.getElementById('optionsBox').innerHTML += '<button onclick="saveGame()">Salvar jogo</button>';
-    }
-
-    function saveGame() {
-      alert('Jogo salvo com sucesso!');
-      // Lógica para salvar o jogo pode ser implementada aqui
-    }
-
+    // Inicia o primeiro diálogo
+    nextDialogue(0);
     updateStatus();
   </script>
 </body>

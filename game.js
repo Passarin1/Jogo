@@ -161,3 +161,175 @@ function createCharacter() {
     // Chama a função para mostrar a imagem do personagem
     showCharacterImage();
 }
+let playerPosition = { x: 6, y: 2 }; // Posição do jogador
+let enemyPosition = { x: 6, y: 11 }; // Posição do inimigo
+let enemyHealth = 40; // Vida do inimigo
+let playerHealth = 100; // Vida do jogador
+let playerActions = 3; // Ações por turno
+
+// Função para desenhar o grid
+function drawGrid() {
+    const gridElement = document.querySelector(".grid");
+    gridElement.innerHTML = ""; // Limpa o grid para redesenhar
+
+    for (let row = 0; row < 14; row++) {
+        for (let col = 0; col < 14; col++) {
+            let cell = document.createElement('div');
+            cell.classList.add('cell');
+
+            // Adicionar imagem do jogador
+            if (row === playerPosition.y && col === playerPosition.x) {
+                const playerImg = document.createElement('img');
+                playerImg.src = 'player.png'; // Coloque o caminho da imagem do jogador
+                playerImg.classList.add('player-image');
+                cell.appendChild(playerImg);
+            }
+
+            // Adicionar imagem do inimigo
+            if (row === enemyPosition.y && col === enemyPosition.x) {
+                const enemyImg = document.createElement('img');
+                enemyImg.src = 'enemy.png'; // Coloque o caminho da imagem do inimigo
+                enemyImg.classList.add('enemy-image');
+                cell.appendChild(enemyImg);
+            }
+
+            gridElement.appendChild(cell);
+        }
+    }
+}
+
+// Função para registrar ações
+function logAction(message) {
+    const log = document.getElementById("log");
+    log.innerHTML += `<p>${message}</p>`;
+    log.scrollTop = log.scrollHeight;
+}
+
+// Função de movimentação
+function move(direction) {
+    if (playerActions === 0) {
+        logAction("Ação esgotada! Aguarde o próximo turno.");
+        return;
+    }
+
+    let newPosition = { ...playerPosition };
+    if (direction === 'up' && playerPosition.y > 0) newPosition.y--;
+    if (direction === 'down' && playerPosition.y < 13) newPosition.y++;
+    if (direction === 'left' && playerPosition.x > 0) newPosition.x--;
+    if (direction === 'right' && playerPosition.x < 13) newPosition.x++;
+
+    playerPosition = newPosition;
+    drawGrid();
+    playerActions--;
+    logAction(`Você se moveu para ${direction}. Ações restantes: ${playerActions}`);
+}
+
+// Função de ataque
+function attack() {
+    if (playerActions === 0) {
+        logAction("Ação esgotada! Aguarde o próximo turno.");
+        return;
+    }
+
+    const distance = Math.abs(playerPosition.x - enemyPosition.x) + Math.abs(playerPosition.y - enemyPosition.y);
+    if (distance === 1) {
+        // Cálculo de dano do ataque
+        let damage = Math.floor(Math.random() * 10) + 1; // Dano aleatório de 1 a 10
+        enemyHealth -= damage;
+        logAction(`Você atacou o inimigo e causou ${damage} de dano! Vida do inimigo: ${enemyHealth}`);
+        if (enemyHealth <= 0) {
+            enemyDefeated();
+        }
+    } else {
+        logAction("Você está longe demais para atacar!");
+    }
+
+    playerActions--;
+}
+
+// Função de uso de magia
+function useMagic() {
+    if (playerActions === 0) {
+        logAction("Ação esgotada! Aguarde o próximo turno.");
+        return;
+    }
+
+    const distance = Math.abs(playerPosition.x - enemyPosition.x) + Math.abs(playerPosition.y - enemyPosition.y);
+    if (distance <= 3) { // Magia pode ser usada a uma distância de até 3
+        let magicDamage = Math.floor(Math.random() * 15) + 5; // Dano aleatório de 5 a 20
+        enemyHealth -= magicDamage;
+        logAction(`Você lançou uma magia e causou ${magicDamage} de dano! Vida do inimigo: ${enemyHealth}`);
+        if (enemyHealth <= 0) {
+            enemyDefeated();
+        }
+    } else {
+        logAction("Você está longe demais para usar magia!");
+    }
+
+    playerActions--;
+}
+
+// Função para usar perícias
+function useSkill(skill) {
+    if (playerActions === 0) {
+        logAction("Ação esgotada! Aguarde o próximo turno.");
+        return;
+    }
+
+    switch (skill) {
+        case 'Força':
+            logAction("Você usou Força, aumentando seu poder de ataque temporariamente!");
+            break;
+        case 'Inteligência':
+            logAction("Você usou Inteligência para avaliar a situação!");
+            break;
+        case 'Destreza':
+            logAction("Você usou Destreza para esquivar de um ataque!");
+            break;
+        case 'Carisma':
+            logAction("Você usou Carisma para tentar distrair o inimigo!");
+            break;
+        case 'Vigor':
+            logAction("Você usou Vigor para resistir a ataques!");
+            break;
+        default:
+            logAction("Perícia não reconhecida.");
+            break;
+    }
+
+    playerActions--;
+}
+
+// Função para finalizar o turno
+function endTurn() {
+    playerActions = 3;
+    logAction("Novo turno! Ações restauradas.");
+    enemyAttack();
+    drawGrid();
+}
+
+// Função para ataque do inimigo
+function enemyAttack() {
+    if (enemyHealth > 0) {
+        const distance = Math.abs(playerPosition.x - enemyPosition.x) + Math.abs(playerPosition.y - enemyPosition.y);
+        if (distance === 1) {
+            let enemyDamage = Math.floor(Math.random() * 10) + 1; // Dano aleatório do inimigo
+            playerHealth -= enemyDamage;
+            logAction(`O inimigo atacou e causou ${enemyDamage} de dano! Vida do jogador: ${playerHealth}`);
+            if (playerHealth <= 0) {
+                logAction("Você foi derrotado!");
+            }
+        } else {
+            logAction("O inimigo não pode te alcançar!");
+        }
+    }
+}
+
+// Função para inimigo derrotado
+function enemyDefeated() {
+    logAction("Você derrotou o inimigo!");
+    enemyHealth = 0; // Define a vida do inimigo como 0
+}
+
+// Inicialização
+drawGrid();

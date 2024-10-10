@@ -189,17 +189,20 @@
     }
 
     function nextDialogue(index) {
-      const dialogue = dialogues[index];
-      document.getElementById('dialogueText').innerHTML = `<p>${dialogue.text}</p>`;
+      if (index < dialogues.length) {
+        const dialogue = dialogues[index];
+        document.getElementById('dialogueText').innerHTML = `<p>${dialogue.text}</p>`;
 
-      const optionsHtml = dialogue.options.map((option, i) => `<button onclick="nextDialogue(${i + 1})">${option}</button>`).join('');
-      document.getElementById('optionsBox').innerHTML = optionsHtml;
+        const optionsHtml = dialogue.options.map((option, i) => {
+          return `<button onclick="nextDialogue(${index + 1 + i})">${option}</button>`;
+        }).join('');
+        document.getElementById('optionsBox').innerHTML = optionsHtml;
 
-      if (index === dialogues.length - 1) {
-        // Redireciona para a próxima página quando o diálogo termina
-        setTimeout(() => {
-          window.location.href = 'proxima_pagina.html';
-        }, 2000);
+        if (index === dialogues.length - 1) {
+          setTimeout(() => {
+            window.location.href = 'proxima_pagina.html';
+          }, 2000);
+        }
       }
     }
 

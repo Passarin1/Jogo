@@ -44,6 +44,40 @@
     .menu button:hover {
       background-color: #3498db;
     }
+
+    /* Estilos para o modal */
+    .modal {
+      display: none;
+      position: fixed;
+      z-index: 1;
+      left: 0;
+      top: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0, 0, 0, 0.8);
+    }
+    .modal-content {
+      background-color: #34495e;
+      margin: 15% auto;
+      padding: 20px;
+      border: 1px solid #888;
+      width: 80%;
+      max-width: 500px;
+      color: white;
+      border-radius: 10px;
+    }
+    .close {
+      color: #aaa;
+      float: right;
+      font-size: 28px;
+      font-weight: bold;
+    }
+    .close:hover,
+    .close:focus {
+      color: white;
+      text-decoration: none;
+      cursor: pointer;
+    }
   </style>
 </head>
 <body>
@@ -53,7 +87,30 @@
     <button id="loadGameBtn">Carregar Jogo</button>
     <button id="howToPlayBtn">Como Jogar</button>
     <button id="storyBtn">História</button>
-    <button id="exitBtn">Sair</button>
+  </div>
+
+  <!-- Modal para "Como Jogar" -->
+  <div id="howToPlayModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeHowToPlay">&times;</span>
+      <h2>Como Jogar</h2>
+      <p>Em "A Sombra de Vhaltoria", você explorará lugares misteriosos, enfrentará demônios e escolherá seu destino.</p>
+      <ul>
+        <li>Use suas perícias e magias para lutar.</li>
+        <li>Lançamentos de dados d100 determinam o sucesso das ações: quanto menor o número, melhor o resultado.</li>
+        <li>O objetivo é restabelecer a paz do reino e impedir que os artefatos caiam nas mãos dos demônios.</li>
+      </ul>
+      <p>Está pronto para embarcar nessa aventura?</p>
+    </div>
+  </div>
+
+  <!-- Modal para "História" -->
+  <div id="storyModal" class="modal">
+    <div class="modal-content">
+      <span class="close" id="closeStory">&times;</span>
+      <h2>História</h2>
+      <p>O Reino de Vhaltoria está à beira da ruína. Há rumores de que um artefato perdido nas Ruínas Antigas pode salvar o reino, mas criaturas demoníacas guardam este segredo. Cabe a você, um aventureiro corajoso, recuperar a máscara e revelar a verdade.</p>
+    </div>
   </div>
 
   <script>
@@ -66,17 +123,36 @@
       alert('Função de Carregar Jogo ainda não implementada.');
     });
 
+    // Abrir modal "Como Jogar"
     document.getElementById('howToPlayBtn').addEventListener('click', () => {
-      alert('Em "A Sombra de Vhaltoria", você explorará ruínas misteriosas, enfrentará demônios e escolherá seu destino.\n- Use suas perícias e magias para lutar.\n- Lançamentos de dados d100 determinam o sucesso das ações: quanto menor o número, melhor o resultado.\n- O objetivo é pegar a Máscara Maldita e entregá-la ao Rei.');
+      document.getElementById('howToPlayModal').style.display = 'block';
     });
 
+    // Fechar modal "Como Jogar"
+    document.getElementById('closeHowToPlay').addEventListener('click', () => {
+      document.getElementById('howToPlayModal').style.display = 'none';
+    });
+
+    // Abrir modal "História"
     document.getElementById('storyBtn').addEventListener('click', () => {
-      alert('História:\nO Reino de Vhaltoria está à beira da ruína. Há rumores de que um artefato perdido nas Ruínas Antigas pode salvar o reino, mas criaturas demoníacas guardam este segredo. Cabe a você, um aventureiro corajoso, recuperar a máscara e revelar a verdade.');
+      document.getElementById('storyModal').style.display = 'block';
     });
 
-    document.getElementById('exitBtn').addEventListener('click', () => {
-      alert('Sair do Jogo.'); // Aqui você pode adicionar código para fechar o jogo, caso seja um aplicativo
+    // Fechar modal "História"
+    document.getElementById('closeStory').addEventListener('click', () => {
+      document.getElementById('storyModal').style.display = 'none';
     });
+
+    // Fechar modais ao clicar fora do conteúdo
+    window.onclick = function(event) {
+      if (event.target == document.getElementById('howToPlayModal')) {
+        document.getElementById('howToPlayModal').style.display = 'none';
+      }
+      if (event.target == document.getElementById('storyModal')) {
+        document.getElementById('storyModal').style.display = 'none';
+      }
+    };
+
   </script>
 </body>
 </html>
